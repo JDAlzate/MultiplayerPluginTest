@@ -80,3 +80,8 @@ void UMultiplayerSessionsSubsystem::StartSession()
 void UMultiplayerSessionsSubsystem::OnStartSessionComplete(const FName SessionName, const bool bWasSuccessful)
 {
 }
+
+UMultiplayerSessionsSubsystem* UMultiplayerSessionsSubsystem::Get(const UGameInstance* GameInstance)
+{
+	return GameInstance ? GameInstance->GetSubsystem<UMultiplayerSessionsSubsystem>() : nullptr;
+}

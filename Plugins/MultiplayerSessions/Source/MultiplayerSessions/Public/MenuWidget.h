@@ -7,12 +7,36 @@
 #include "UObject/Object.h"
 #include "MenuWidget.generated.h"
 
+class UMultiplayerSessionsSubsystem;
+class UButton;
+
 UCLASS()
 class MULTIPLAYERSESSIONS_API UMenuWidget : public UUserWidget
 {
 	GENERATED_BODY()
 
+private:
+	UPROPERTY(meta = (BindWidget))
+	UButton* HostButton;
+
+	UPROPERTY(meta = (BindWidget))
+	UButton* JoinButton;
+
+private:
+	UPROPERTY(Transient)
+	UMultiplayerSessionsSubsystem* MultiplayerSessionsSubsystem;
+
+protected:
+	virtual void NativeConstruct() override;
+	
 public:
 	UFUNCTION(BlueprintCallable)
 	void SetupMenu();
+
+private:
+	UFUNCTION()
+	void OnHostButtonClicked();
+
+	UFUNCTION()
+	void OnJoinButtonClicked();
 };

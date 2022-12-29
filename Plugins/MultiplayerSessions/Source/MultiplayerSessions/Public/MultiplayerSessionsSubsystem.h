@@ -39,4 +39,8 @@ public:
 
 	void StartSession();
 	void OnStartSessionComplete(const FName SessionName, const bool bWasSuccessful);
+
+public:
+	UFUNCTION(BlueprintPure)
+	static UMultiplayerSessionsSubsystem* Get(const UGameInstance* GameInstance);
 };
