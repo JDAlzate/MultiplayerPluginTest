@@ -12,6 +12,9 @@ class MULTIPLAYERSESSIONS_API UMultiplayerSessionsSubsystem : public UGameInstan
 {
 	GENERATED_BODY()
 
+private:
+	IOnlineSessionPtr OnlineSessionInterface;
+	
 public:
 	UMultiplayerSessionsSubsystem();
 	
@@ -19,5 +22,21 @@ protected:
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
 
 private:
-	IOnlineSessionPtr OnlineSessionInterface;
+	void BindDelegates();
+
+public:
+	void RequestCreateSession(const int32 NumPublicConnections, const FString& MatchType);
+	void OnCreateSessionComplete(const FName SessionName, const bool bWasSuccessful);
+	
+	void DestroySession();
+	void OnDestroySessionComplete(const FName SessionName, const bool bWasSuccessful);
+	
+	void FindSessions(int32 MaxSearchResults);
+	void OnFindSessionsComplete(const bool bWasSuccessful);
+	
+	void JoinSession();
+	void OnJoinSessionComplete(const FName SessionName, EOnJoinSessionCompleteResult::Type Result);
+
+	void StartSession();
+	void OnStartSessionComplete(const FName SessionName, const bool bWasSuccessful);
 };
