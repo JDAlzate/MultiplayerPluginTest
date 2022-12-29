@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "OnlineSessionSettings.h"
 #include "Interfaces/OnlineSessionInterface.h"
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "MultiplayerSessionsSubsystem.generated.h"
@@ -14,6 +15,7 @@ class MULTIPLAYERSESSIONS_API UMultiplayerSessionsSubsystem : public UGameInstan
 
 private:
 	IOnlineSessionPtr OnlineSessionInterface;
+	FOnlineSessionSettings SessionSettings;
 	
 public:
 	UMultiplayerSessionsSubsystem();

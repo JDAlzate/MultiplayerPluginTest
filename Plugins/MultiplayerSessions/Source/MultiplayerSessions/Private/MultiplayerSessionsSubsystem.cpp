@@ -42,11 +42,44 @@ void UMultiplayerSessionsSubsystem::BindDelegates()
 
 void UMultiplayerSessionsSubsystem::RequestCreateSession(const int32 NumPublicConnections, const FString& MatchType)
 {
-	
+	if (!OnlineSessionInterface.IsValid() || !IOnlineSubsystem::Get())
+	{
+		return;
+	}
+
+	if (OnlineSessionInterface->GetNamedSession(NAME_GameSession))
+	{
+		OnlineSessionInterface->DestroySession(NAME_GameSession);
+		return;
+	}
+
+	SessionSettings = {};
+	SessionSettings.bIsLANMatch = IOnlineSubsystem::Get()->GetSubsystemName() == "NULL";
+	SessionSettings.NumPublicConnections = NumPublicConnections;
+	SessionSettings.bAllowJoinInProgress = true;
+	SessionSettings.bAllowJoinViaPresence = true;
+	SessionSettings.bShouldAdvertise = true;
+	SessionSettings.bUsesPresence = true;
+	SessionSettings.bUseLobbiesIfAvailable = true;
+	SessionSettings.Set(TEXT("MatchType"), MatchType, EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
+
+	if (const ULocalPlayer* LocalPlayer = GetWorld()->GetFirstLocalPlayerFromController())
+	{
+		OnlineSessionInterface->CreateSession(*LocalPlayer->GetPreferredUniqueNetId(), NAME_GameSession, SessionSettings);
+	}
 }
 
 void UMultiplayerSessionsSubsystem::OnCreateSessionComplete(const FName SessionName, const bool bWasSuccessful)
 {
+	if (bWasSuccessful)
+	{
+		GEngine->AddOnScreenDebugMessage(INDEX_NONE, 15.f, FColor::Cyan, FString::Printf(TEXT("Created session: %s"), *SessionName.ToString()));
+		GetWorld()->ServerTravel(TEXT("/Game/ThirdPerson/Maps/Lobby?listen"));
+	}
+	else
+	{
+		GEngine->AddOnScreenDebugMessage(INDEX_NONE, 15.f, FColor::Red, FString("Failed to create session!"));
+	}
 }
 
 void UMultiplayerSessionsSubsystem::DestroySession()

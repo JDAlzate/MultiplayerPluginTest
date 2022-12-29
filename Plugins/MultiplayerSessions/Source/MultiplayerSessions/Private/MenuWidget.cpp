@@ -21,6 +21,12 @@ void UMenuWidget::NativeConstruct()
 	}
 }
 
+void UMenuWidget::NativeDestruct()
+{
+	TearDownMenu();
+	Super::NativeDestruct();
+}
+
 void UMenuWidget::SetupMenu()
 {
 	AddToViewport();
@@ -37,6 +43,17 @@ void UMenuWidget::SetupMenu()
 	}
 
 	MultiplayerSessionsSubsystem = UMultiplayerSessionsSubsystem::Get(GetGameInstance());
+}
+
+void UMenuWidget::TearDownMenu()
+{
+	RemoveFromParent();
+	
+	if (APlayerController* PlayerController = GetWorld()->GetFirstPlayerController())
+	{
+		PlayerController->SetInputMode(FInputModeGameOnly());
+		PlayerController->SetShowMouseCursor(false);
+	}
 }
 
 void UMenuWidget::OnHostButtonClicked()

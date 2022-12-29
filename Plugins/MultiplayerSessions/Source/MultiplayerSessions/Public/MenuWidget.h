@@ -28,10 +28,14 @@ private:
 
 protected:
 	virtual void NativeConstruct() override;
+	virtual void NativeDestruct() override;
 	
 public:
 	UFUNCTION(BlueprintCallable)
 	void SetupMenu();
+
+private:
+	void TearDownMenu();
 
 private:
 	UFUNCTION()
