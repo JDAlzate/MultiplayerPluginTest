@@ -5,16 +5,7 @@
     <projectFile>Intermediate/ProjectFiles/UE5.vcxproj</projectFile>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="da89c834-4392-40fa-9e41-3e7a1986b7ea" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Plugins/MultiplayerSessions/MultiplayerSessions.uplugin" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Plugins/MultiplayerSessions/Resources/Icon128.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Plugins/MultiplayerSessions/Source/MultiplayerSessions/MultiplayerSessions.Build.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Plugins/MultiplayerSessions/Source/MultiplayerSessions/Private/MultiplayerSessions.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Plugins/MultiplayerSessions/Source/MultiplayerSessions/Public/MultiplayerSessions.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.MultiplayerPlugin/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.MultiplayerPlugin/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MultiplayerPlugin.uproject" beforeDir="false" afterPath="$PROJECT_DIR$/MultiplayerPlugin.uproject" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/MultiplayerPlugin/MultiplayerPluginCharacter.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/MultiplayerPlugin/MultiplayerPluginCharacter.h" afterDir="false" />
-    </list>
+    <list default="true" id="da89c834-4392-40fa-9e41-3e7a1986b7ea" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -176,7 +167,7 @@
       <workItem from="1672194511619" duration="4547000" />
       <workItem from="1672245287756" duration="1521000" />
       <workItem from="1672281532283" duration="8262000" />
-      <workItem from="1672320518539" duration="328000" />
+      <workItem from="1672320518539" duration="801000" />
     </task>
     <servers />
   </component>
