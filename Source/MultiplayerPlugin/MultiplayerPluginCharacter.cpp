@@ -78,6 +78,9 @@ void AMultiplayerPluginCharacter::BeginPlay()
 	{
 		const auto OnCreateSessionCompleteDelegate = FOnCreateSessionCompleteDelegate::CreateUObject(this, &AMultiplayerPluginCharacter::OnCreateSessionComplete);
 		OnlineSessionInterface->AddOnCreateSessionCompleteDelegate_Handle(OnCreateSessionCompleteDelegate);
+
+		const auto OnFindSessionsCompleteDelegate = FOnFindSessionsCompleteDelegate::CreateUObject(this, &AMultiplayerPluginCharacter::OnFindSessionsComplete);
+		OnlineSessionInterface->AddOnFindSessionsCompleteDelegate_Handle(OnFindSessionsCompleteDelegate);
 	}
 }
 
@@ -140,6 +143,36 @@ void AMultiplayerPluginCharacter::OnCreateSessionComplete(const FName SessionNam
 	else
 	{
 		GEngine->AddOnScreenDebugMessage(INDEX_NONE, 15.f, FColor::Red, FString("Failed to create session!"));
+	}
+}
+
+void AMultiplayerPluginCharacter::RequestJoinGameSession()
+{
+	if (!OnlineSessionInterface.IsValid())
+	{
+		return;
+	}
+	
+	// Find game sessions
+	SessionSearch = MakeShareable(new FOnlineSessionSearch());
+	SessionSearch->MaxSearchResults = 10'000'000;
+	SessionSearch->bIsLanQuery = false;
+	SessionSearch->QuerySettings.Set(SEARCH_PRESENCE, true, EOnlineComparisonOp::Equals);
+
+	if (const ULocalPlayer* LocalPlayer = GetWorld()->GetFirstLocalPlayerFromController())
+	{
+		OnlineSessionInterface->FindSessions(*LocalPlayer->GetPreferredUniqueNetId(), SessionSearch.ToSharedRef());
+	}	
+}
+
+void AMultiplayerPluginCharacter::OnFindSessionsComplete(const bool bWasSuccessful)
+{
+	for	(const FOnlineSessionSearchResult& Result : SessionSearch->SearchResults)
+	{
+		const FString SessionId = Result.GetSessionIdStr();
+		const FString& User = Result.Session.OwningUserName;
+
+		GEngine->AddOnScreenDebugMessage(INDEX_NONE, 15.f, FColor::Cyan, FString::Printf(TEXT("Found session! Id: %s, User: %s"), *SessionId, *User));
 	}
 }
 

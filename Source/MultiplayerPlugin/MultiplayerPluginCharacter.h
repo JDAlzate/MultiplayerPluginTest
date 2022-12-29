@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
-#include "Interfaces/OnlineSessionDelegates.h"
 #include "Interfaces/OnlineSessionInterface.h"
 #include "MultiplayerPluginCharacter.generated.h"
 
@@ -73,5 +72,14 @@ protected:
 
 	void CreateGameSession();
 	void OnCreateSessionComplete(const FName SessionName, const bool bWasSuccessful);
+
+	UFUNCTION(BlueprintCallable)
+	void RequestJoinGameSession();
+
+	void OnFindSessionsComplete(const bool bWasSuccessful);
+
+private:
+	/** The current session search result */
+	TSharedPtr<class FOnlineSessionSearch> SessionSearch;
 };
 
