@@ -44,3 +44,39 @@ void UMultiplayerSessionsSubsystem::RequestCreateSession(const int32 NumPublicCo
 {
 	
 }
+
+void UMultiplayerSessionsSubsystem::OnCreateSessionComplete(const FName SessionName, const bool bWasSuccessful)
+{
+}
+
+void UMultiplayerSessionsSubsystem::DestroySession()
+{
+}
+
+void UMultiplayerSessionsSubsystem::OnDestroySessionComplete(const FName SessionName, const bool bWasSuccessful)
+{
+}
+
+void UMultiplayerSessionsSubsystem::FindSessions(int32 MaxSearchResults)
+{
+}
+
+void UMultiplayerSessionsSubsystem::OnFindSessionsComplete(const bool bWasSuccessful)
+{
+}
+
+void UMultiplayerSessionsSubsystem::JoinSession()
+{
+}
+
+void UMultiplayerSessionsSubsystem::OnJoinSessionComplete(const FName SessionName, EOnJoinSessionCompleteResult::Type Result)
+{
+}
+
+void UMultiplayerSessionsSubsystem::StartSession()
+{
+}
+
+void UMultiplayerSessionsSubsystem::OnStartSessionComplete(const FName SessionName, const bool bWasSuccessful)
+{
+}
