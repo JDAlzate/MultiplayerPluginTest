@@ -81,6 +81,6 @@ protected:
 
 private:
 	/** The current session search result */
-	TSharedPtr<class FOnlineSessionSearch> SessionSearch;
+	TSharedPtr<FOnlineSessionSearch> SessionSearch;
 };
 
