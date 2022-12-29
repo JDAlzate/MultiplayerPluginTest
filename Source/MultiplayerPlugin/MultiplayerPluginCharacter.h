@@ -77,6 +77,7 @@ protected:
 	void RequestJoinGameSession();
 
 	void OnFindSessionsComplete(const bool bWasSuccessful);
+	void OnJoinSessionComplete(const FName SessionName, EOnJoinSessionCompleteResult::Type Result);
 
 private:
 	/** The current session search result */

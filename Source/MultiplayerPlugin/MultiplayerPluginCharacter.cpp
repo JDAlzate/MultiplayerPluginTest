@@ -81,6 +81,9 @@ void AMultiplayerPluginCharacter::BeginPlay()
 
 		const auto OnFindSessionsCompleteDelegate = FOnFindSessionsCompleteDelegate::CreateUObject(this, &AMultiplayerPluginCharacter::OnFindSessionsComplete);
 		OnlineSessionInterface->AddOnFindSessionsCompleteDelegate_Handle(OnFindSessionsCompleteDelegate);
+
+		const auto OnJoinSessionCompleteDelegate = FOnJoinSessionCompleteDelegate::CreateUObject(this, &AMultiplayerPluginCharacter::OnJoinSessionComplete);
+		OnlineSessionInterface->AddOnJoinSessionCompleteDelegate_Handle(OnJoinSessionCompleteDelegate);
 	}
 }
 
@@ -127,6 +130,7 @@ void AMultiplayerPluginCharacter::CreateGameSession()
 	SessionSettings.bShouldAdvertise = true;
 	SessionSettings.bUsesPresence = true;
 	SessionSettings.bUseLobbiesIfAvailable = true;
+	SessionSettings.Set<FString>(TEXT("MatchType"), TEXT("FreeForAll"), EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
 	
 	if (const ULocalPlayer* LocalPlayer = GetWorld()->GetFirstLocalPlayerFromController())
 	{
@@ -139,6 +143,7 @@ void AMultiplayerPluginCharacter::OnCreateSessionComplete(const FName SessionNam
 	if (bWasSuccessful)
 	{
 		GEngine->AddOnScreenDebugMessage(INDEX_NONE, 15.f, FColor::Cyan, FString::Printf(TEXT("Created session: %s"), *SessionName.ToString()));
+		GetWorld()->ServerTravel(TEXT("/Game/ThirdPerson/Maps/Lobby?listen"));
 	}
 	else
 	{
@@ -171,8 +176,41 @@ void AMultiplayerPluginCharacter::OnFindSessionsComplete(const bool bWasSuccessf
 	{
 		const FString SessionId = Result.GetSessionIdStr();
 		const FString& User = Result.Session.OwningUserName;
-
 		GEngine->AddOnScreenDebugMessage(INDEX_NONE, 15.f, FColor::Cyan, FString::Printf(TEXT("Found session! Id: %s, User: %s"), *SessionId, *User));
+
+		FString MatchType;
+		Result.Session.SessionSettings.Get(TEXT("MatchType"), MatchType);
+		
+		if (MatchType == TEXT("FreeForAll"))
+		{
+			GEngine->AddOnScreenDebugMessage(INDEX_NONE, 15.f, FColor::Cyan, FString::Printf(TEXT("Joining Match Type: %s"), *MatchType));
+
+			if (const ULocalPlayer* LocalPlayer = GetWorld()->GetFirstLocalPlayerFromController())
+			{
+				OnlineSessionInterface->JoinSession(*LocalPlayer->GetPreferredUniqueNetId(), NAME_GameSession, Result);
+			}
+		}
+	}
+}
+
+void AMultiplayerPluginCharacter::OnJoinSessionComplete(const FName SessionName, EOnJoinSessionCompleteResult::Type Result)
+{
+	if (!OnlineSessionInterface.IsValid())
+	{
+		return;
+	}
+
+	FString Address;
+	const bool bSuccessfulConnect = OnlineSessionInterface->GetResolvedConnectString(NAME_GameSession, Address);
+
+	if (bSuccessfulConnect)
+	{
+		GEngine->AddOnScreenDebugMessage(INDEX_NONE, 15.f, FColor::Yellow, FString::Printf(TEXT("Connection address: %s"), *Address));
+
+		if (APlayerController* PlayerController = GetGameInstance()->GetFirstLocalPlayerController())
+		{
+			PlayerController->ClientTravel(Address, TRAVEL_Absolute);
+		}
 	}
 }
 
