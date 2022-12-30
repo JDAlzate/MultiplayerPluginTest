@@ -63,6 +63,7 @@ void UMultiplayerSessionsSubsystem::RequestCreateSession(const int32 NumPublicCo
 	SessionSettings.bShouldAdvertise = true;
 	SessionSettings.bUsesPresence = true;
 	SessionSettings.bUseLobbiesIfAvailable = true;
+	SessionSettings.BuildUniqueId = 1;
 	SessionSettings.Set(TEXT("MatchType"), MatchType, EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
 
 	if (const ULocalPlayer* LocalPlayer = GetWorld()->GetFirstLocalPlayerFromController())
