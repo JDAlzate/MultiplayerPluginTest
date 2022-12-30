@@ -12,7 +12,7 @@
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnMultiplayerSessionCreated, const FName, SessionName, const bool, bWasSuccessful);
 DECLARE_MULTICAST_DELEGATE_TwoParams(FOnMultiplayerFindSessionsComplete, const TArray<FOnlineSessionSearchResult>& SearchResults, const bool bWasSuccessful);
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnMultiplayerJoinSessionComplete, const EOnJoinSessionCompleteResult::Type Result);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnMultiplayerSessionDestroyed, const FName, SessionName, const bool, bWassuccessful);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMultiplayerSessionDestroyed, const bool, bWassuccessful);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnMultiplayerStartSessionComplete, const FName, SessionName, const bool, bWassuccessful);
 
 UCLASS()
@@ -25,6 +25,11 @@ private:
 	
 	FOnlineSessionSettings SessionSettings;
 	TSharedPtr<FOnlineSessionSearch> SessionSearchResults;
+
+private:
+	bool bCreateSessionOnDestroy = false;
+	int32 LastCreateRequestPublicConnections;
+	FString LastCreateRequestMatchType;
 
 public:
 	FOnMultiplayerSessionCreated OnMultiplayerSessionCreatedDelegate;

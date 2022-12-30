@@ -30,6 +30,7 @@ private:
 private:
 	int32 MaxSessionSearches;
 	FString MatchType;
+	FString PathToLobby;
 
 protected:
 	virtual void NativeConstruct() override;
@@ -43,14 +44,14 @@ protected:
 	virtual void OnMultiplayerSessionJoined(const EOnJoinSessionCompleteResult::Type Result);
 
 	UFUNCTION()
-	virtual void OnMultiplayerSessionDestroyed(const FName SessionName, const bool bWasSuccessful);
+	virtual void OnMultiplayerSessionDestroyed(const bool bWasSuccessful);
 
 	UFUNCTION()
 	virtual void OnMultiplayerSessionStarted(const FName SessionName, const bool bWasSuccessful);
 	
 public:
-	UFUNCTION(BlueprintCallable, meta = (AutoCreateRefTerm="NewMatchType"))
-	void SetupMenu(const int32 NewMaxSearchSessions = 10000, const FString& NewMatchType = FString("DefaultMatchType"));
+	UFUNCTION(BlueprintCallable, meta = (AutoCreateRefTerm="NewMatchType,PathToLobby"))
+	void SetupMenu(const int32 NewMaxSearchSessions = 10000, const FString& NewMatchType = TEXT("DefaultMatchType"), const FString& NewPathToLobby = TEXT("/Game/ThirdPerson/Maps/Lobby"));
 
 private:
 	void TearDownMenu();
@@ -61,4 +62,7 @@ private:
 
 	UFUNCTION()
 	void OnJoinButtonClicked();
+
+	void EnableButtons();
+	void DisableButtons();
 };

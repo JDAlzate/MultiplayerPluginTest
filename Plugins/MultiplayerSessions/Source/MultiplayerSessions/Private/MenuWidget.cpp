@@ -31,7 +31,11 @@ void UMenuWidget::OnMultiplayerSessionCreated(const FName SessionName, const boo
 {
 	if (bWasSuccessful)
 	{
-		GetWorld()->ServerTravel(TEXT("/Game/ThirdPerson/Maps/Lobby?listen"));
+		GetWorld()->ServerTravel(FString::Printf(TEXT("%s?listen"), *PathToLobby));
+	}
+	else
+	{
+		EnableButtons();
 	}
 }
 
@@ -39,8 +43,9 @@ void UMenuWidget::OnMultiplayerSessionsFound(const TArray<FOnlineSessionSearchRe
 {
 	GEngine->AddOnScreenDebugMessage(INDEX_NONE, 90.f, FColor::Cyan, TEXT("UMenuWidget::OnMultiplayerSessionsFound Called!!"));
 
-	if (!MultiplayerSessionsSubsystem)
+	if (!MultiplayerSessionsSubsystem || !bWasSuccessful)
 	{
+		EnableButtons();
 		return;
 	}
 
@@ -55,18 +60,22 @@ void UMenuWidget::OnMultiplayerSessionsFound(const TArray<FOnlineSessionSearchRe
 			return;
 		}
 	}
+
+	EnableButtons();
 }
 
 void UMenuWidget::OnMultiplayerSessionJoined(const EOnJoinSessionCompleteResult::Type Result)
 {
-	if (!MultiplayerSessionsSubsystem)
+	if (!MultiplayerSessionsSubsystem || Result != EOnJoinSessionCompleteResult::Success)
 	{
+		EnableButtons();
 		return;
 	}
 
 	IOnlineSessionPtr OnlineSessionInterface = MultiplayerSessionsSubsystem->GetOnlineSubsystemInterface();
 	if (!OnlineSessionInterface.IsValid())
 	{
+		EnableButtons();
 		return;
 	}
 
@@ -76,10 +85,13 @@ void UMenuWidget::OnMultiplayerSessionJoined(const EOnJoinSessionCompleteResult:
 	if (APlayerController* PlayerController = GetGameInstance()->GetFirstLocalPlayerController())
 	{
 		PlayerController->ClientTravel(Address, TRAVEL_Absolute);
+		return;
 	}
+
+	EnableButtons();
 }
 
-void UMenuWidget::OnMultiplayerSessionDestroyed(const FName SessionName, const bool bWasSuccessful)
+void UMenuWidget::OnMultiplayerSessionDestroyed(const bool bWasSuccessful)
 {
 }
 
@@ -87,7 +99,7 @@ void UMenuWidget::OnMultiplayerSessionStarted(const FName SessionName, const boo
 {
 }
 
-void UMenuWidget::SetupMenu(const int32 NewMaxSearchSessions, const FString& NewMatchType)
+void UMenuWidget::SetupMenu(const int32 NewMaxSearchSessions, const FString& NewMatchType, const FString& NewPathToLobby)
 {
 	AddToViewport();
 	SetVisibility(ESlateVisibility::Visible);
@@ -95,6 +107,7 @@ void UMenuWidget::SetupMenu(const int32 NewMaxSearchSessions, const FString& New
 
 	MaxSessionSearches = NewMaxSearchSessions;
 	MatchType = NewMatchType;
+	PathToLobby = NewPathToLobby;
 
 	if (APlayerController* PlayerController = GetWorld()->GetFirstPlayerController())
 	{
@@ -132,6 +145,7 @@ void UMenuWidget::OnHostButtonClicked()
 	if (MultiplayerSessionsSubsystem)
 	{
 		MultiplayerSessionsSubsystem->RequestCreateSession(4, MatchType);
+		DisableButtons();
 	}
 }
 
@@ -141,5 +155,32 @@ void UMenuWidget::OnJoinButtonClicked()
 	if (MultiplayerSessionsSubsystem)
 	{
 		MultiplayerSessionsSubsystem->FindSessions(MaxSessionSearches);
+		DisableButtons();
+	}
+}
+
+void UMenuWidget::EnableButtons()
+{
+	if (HostButton)
+	{
+		HostButton->SetIsEnabled(true);
+	}
+
+	if (JoinButton)
+	{
+		JoinButton->SetIsEnabled(true);
+	}
+}
+
+void UMenuWidget::DisableButtons()
+{
+	if (HostButton)
+	{
+		HostButton->SetIsEnabled(false);
+	}
+
+	if (JoinButton)
+	{
+		JoinButton->SetIsEnabled(false);
 	}
 }

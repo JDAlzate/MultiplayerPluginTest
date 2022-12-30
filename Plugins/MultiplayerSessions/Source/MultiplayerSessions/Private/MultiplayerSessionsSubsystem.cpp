@@ -51,7 +51,11 @@ void UMultiplayerSessionsSubsystem::RequestCreateSession(const int32 NumPublicCo
 
 	if (OnlineSessionInterface->GetNamedSession(NAME_GameSession))
 	{
-		OnlineSessionInterface->DestroySession(NAME_GameSession);
+		bCreateSessionOnDestroy = true;
+		LastCreateRequestPublicConnections = NumPublicConnections;
+		LastCreateRequestMatchType = MatchType;
+		
+		DestroySession();
 		return;
 	}
 
@@ -92,10 +96,27 @@ void UMultiplayerSessionsSubsystem::OnCreateSessionComplete(const FName SessionN
 
 void UMultiplayerSessionsSubsystem::DestroySession()
 {
+	if (!OnlineSessionInterface.IsValid())
+	{
+		OnMultiplayerSessionDestroyed.Broadcast(false);
+		return;
+	}
+
+	if (!OnlineSessionInterface->DestroySession(NAME_GameSession))
+	{
+		OnMultiplayerSessionDestroyed.Broadcast(false);
+	}
 }
 
 void UMultiplayerSessionsSubsystem::OnDestroySessionComplete(const FName SessionName, const bool bWasSuccessful)
 {
+	if (bWasSuccessful && bCreateSessionOnDestroy)
+	{
+		bCreateSessionOnDestroy = false;
+		RequestCreateSession(LastCreateRequestPublicConnections, LastCreateRequestMatchType);
+	}
+
+	OnMultiplayerSessionDestroyed.Broadcast(bWasSuccessful);
 }
 
 void UMultiplayerSessionsSubsystem::FindSessions(const int32 MaxSearchResults)
