@@ -4,10 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
-#include "Interfaces/OnlineSessionInterface.h"
 #include "MultiplayerPluginCharacter.generated.h"
 
-class IOnlineSession;
 struct FInputActionValue;
 
 UCLASS(config=Game)
@@ -61,26 +59,5 @@ public:
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	/** Returns FollowCamera sub-object **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
-
-public:
-	/** Pointer to online session interface */
-	IOnlineSessionPtr OnlineSessionInterface;
-
-protected:
-	UFUNCTION(BlueprintCallable)
-	void RequestCreateGameSession();
-
-	void CreateGameSession();
-	void OnCreateSessionComplete(const FName SessionName, const bool bWasSuccessful);
-
-	UFUNCTION(BlueprintCallable)
-	void RequestJoinGameSession();
-
-	void OnFindSessionsComplete(const bool bWasSuccessful);
-	void OnJoinSessionComplete(const FName SessionName, EOnJoinSessionCompleteResult::Type Result);
-
-private:
-	/** The current session search result */
-	TSharedPtr<FOnlineSessionSearch> SessionSearch;
 };
 

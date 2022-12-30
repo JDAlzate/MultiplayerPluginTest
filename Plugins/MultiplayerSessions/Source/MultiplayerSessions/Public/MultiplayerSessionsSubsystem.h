@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "OnlineSessionSettings.h"
+#include "OnlineSubsystem.h"
 #include "Interfaces/OnlineSessionInterface.h"
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "MultiplayerSessionsSubsystem.generated.h"
@@ -21,7 +22,9 @@ class MULTIPLAYERSESSIONS_API UMultiplayerSessionsSubsystem : public UGameInstan
 
 private:
 	IOnlineSessionPtr OnlineSessionInterface;
+	
 	FOnlineSessionSettings SessionSettings;
+	TSharedPtr<FOnlineSessionSearch> SessionSearchResults;
 
 public:
 	FOnMultiplayerSessionCreated OnMultiplayerSessionCreatedDelegate;
@@ -51,7 +54,7 @@ public:
 	void FindSessions(int32 MaxSearchResults);
 	void OnFindSessionsComplete(const bool bWasSuccessful);
 	
-	void JoinSession();
+	void JoinSession(const FOnlineSessionSearchResult& SessionSearchResult);
 	void OnJoinSessionComplete(const FName SessionName, EOnJoinSessionCompleteResult::Type Result);
 
 	void StartSession();
@@ -60,4 +63,6 @@ public:
 public:
 	UFUNCTION(BlueprintPure)
 	static UMultiplayerSessionsSubsystem* Get(const UGameInstance* GameInstance);
+
+	FORCEINLINE IOnlineSessionPtr GetOnlineSubsystemInterface() const { return OnlineSessionInterface; }
 };

@@ -37,11 +37,46 @@ void UMenuWidget::OnMultiplayerSessionCreated(const FName SessionName, const boo
 
 void UMenuWidget::OnMultiplayerSessionsFound(const TArray<FOnlineSessionSearchResult>& SearchResults, const bool bWasSuccessful)
 {
-	
+	GEngine->AddOnScreenDebugMessage(INDEX_NONE, 90.f, FColor::Cyan, TEXT("UMenuWidget::OnMultiplayerSessionsFound Called!!"));
+
+	if (!MultiplayerSessionsSubsystem)
+	{
+		return;
+	}
+
+	for (const FOnlineSessionSearchResult& SearchResult : SearchResults)
+	{
+		FString ResultMatchType;
+		SearchResult.Session.SessionSettings.Get(TEXT("MatchType"), ResultMatchType);
+
+		if (ResultMatchType == MatchType)
+		{
+			MultiplayerSessionsSubsystem->JoinSession(SearchResult);
+			return;
+		}
+	}
 }
 
 void UMenuWidget::OnMultiplayerSessionJoined(const EOnJoinSessionCompleteResult::Type Result)
 {
+	if (!MultiplayerSessionsSubsystem)
+	{
+		return;
+	}
+
+	IOnlineSessionPtr OnlineSessionInterface = MultiplayerSessionsSubsystem->GetOnlineSubsystemInterface();
+	if (!OnlineSessionInterface.IsValid())
+	{
+		return;
+	}
+
+	FString Address;
+	OnlineSessionInterface->GetResolvedConnectString(NAME_GameSession, Address);
+
+	if (APlayerController* PlayerController = GetGameInstance()->GetFirstLocalPlayerController())
+	{
+		PlayerController->ClientTravel(Address, TRAVEL_Absolute);
+	}
 }
 
 void UMenuWidget::OnMultiplayerSessionDestroyed(const FName SessionName, const bool bWasSuccessful)
@@ -52,11 +87,14 @@ void UMenuWidget::OnMultiplayerSessionStarted(const FName SessionName, const boo
 {
 }
 
-void UMenuWidget::SetupMenu()
+void UMenuWidget::SetupMenu(const int32 NewMaxSearchSessions, const FString& NewMatchType)
 {
 	AddToViewport();
 	SetVisibility(ESlateVisibility::Visible);
 	bIsFocusable = true;
+
+	MaxSessionSearches = NewMaxSearchSessions;
+	MatchType = NewMatchType;
 
 	if (APlayerController* PlayerController = GetWorld()->GetFirstPlayerController())
 	{
@@ -76,13 +114,12 @@ void UMenuWidget::SetupMenu()
 		MultiplayerSessionsSubsystem->OnMultiplayerSessionDestroyed.AddDynamic(this, &UMenuWidget::OnMultiplayerSessionDestroyed);
 		MultiplayerSessionsSubsystem->OnMultiplayerSessionStarted.AddDynamic(this, &UMenuWidget::OnMultiplayerSessionStarted);
 	}
-	
 }
 
 void UMenuWidget::TearDownMenu()
 {
 	RemoveFromParent();
-	
+
 	if (APlayerController* PlayerController = GetWorld()->GetFirstPlayerController())
 	{
 		PlayerController->SetInputMode(FInputModeGameOnly());
@@ -92,19 +129,17 @@ void UMenuWidget::TearDownMenu()
 
 void UMenuWidget::OnHostButtonClicked()
 {
-	GEngine->AddOnScreenDebugMessage(INDEX_NONE, 15.f, FColor::Green, TEXT("Host clicked!"));
-
 	if (MultiplayerSessionsSubsystem)
 	{
-		MultiplayerSessionsSubsystem->RequestCreateSession(4, FString("FreeForAll"));
+		MultiplayerSessionsSubsystem->RequestCreateSession(4, MatchType);
 	}
 }
 
 void UMenuWidget::OnJoinButtonClicked()
 {
-	GEngine->AddOnScreenDebugMessage(INDEX_NONE, 15.f, FColor::Green, TEXT("Join clicked!"));
-
+	GEngine->AddOnScreenDebugMessage(INDEX_NONE, 90.f, FColor::Cyan, TEXT("OnJoinButtonClicked!"));
 	if (MultiplayerSessionsSubsystem)
 	{
+		MultiplayerSessionsSubsystem->FindSessions(MaxSessionSearches);
 	}
 }

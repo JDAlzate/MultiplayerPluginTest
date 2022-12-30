@@ -27,6 +27,10 @@ private:
 	UPROPERTY(Transient)
 	UMultiplayerSessionsSubsystem* MultiplayerSessionsSubsystem;
 
+private:
+	int32 MaxSessionSearches;
+	FString MatchType;
+
 protected:
 	virtual void NativeConstruct() override;
 	virtual void NativeDestruct() override;
@@ -45,8 +49,8 @@ protected:
 	virtual void OnMultiplayerSessionStarted(const FName SessionName, const bool bWasSuccessful);
 	
 public:
-	UFUNCTION(BlueprintCallable)
-	void SetupMenu();
+	UFUNCTION(BlueprintCallable, meta = (AutoCreateRefTerm="NewMatchType"))
+	void SetupMenu(const int32 NewMaxSearchSessions = 10000, const FString& NewMatchType = FString("DefaultMatchType"));
 
 private:
 	void TearDownMenu();
