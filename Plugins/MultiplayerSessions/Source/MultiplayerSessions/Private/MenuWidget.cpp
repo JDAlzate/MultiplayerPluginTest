@@ -35,6 +35,23 @@ void UMenuWidget::OnMultiplayerSessionCreated(const FName SessionName, const boo
 	}
 }
 
+void UMenuWidget::OnMultiplayerSessionsFound(const TArray<FOnlineSessionSearchResult>& SearchResults, const bool bWasSuccessful)
+{
+	
+}
+
+void UMenuWidget::OnMultiplayerSessionJoined(const EOnJoinSessionCompleteResult::Type Result)
+{
+}
+
+void UMenuWidget::OnMultiplayerSessionDestroyed(const FName SessionName, const bool bWasSuccessful)
+{
+}
+
+void UMenuWidget::OnMultiplayerSessionStarted(const FName SessionName, const bool bWasSuccessful)
+{
+}
+
 void UMenuWidget::SetupMenu()
 {
 	AddToViewport();
@@ -54,6 +71,10 @@ void UMenuWidget::SetupMenu()
 	if (MultiplayerSessionsSubsystem)
 	{
 		MultiplayerSessionsSubsystem->OnMultiplayerSessionCreatedDelegate.AddDynamic(this, &UMenuWidget::OnMultiplayerSessionCreated);
+		MultiplayerSessionsSubsystem->OnMultiplayerFindSessionsComplete.AddUObject(this, &UMenuWidget::OnMultiplayerSessionsFound);
+		MultiplayerSessionsSubsystem->OnMultiplayerJoinSessionComplete.AddUObject(this, &UMenuWidget::OnMultiplayerSessionJoined);
+		MultiplayerSessionsSubsystem->OnMultiplayerSessionDestroyed.AddDynamic(this, &UMenuWidget::OnMultiplayerSessionDestroyed);
+		MultiplayerSessionsSubsystem->OnMultiplayerSessionStarted.AddDynamic(this, &UMenuWidget::OnMultiplayerSessionStarted);
 	}
 	
 }

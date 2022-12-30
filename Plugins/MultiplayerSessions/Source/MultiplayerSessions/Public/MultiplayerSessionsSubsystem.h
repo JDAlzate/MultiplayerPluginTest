@@ -9,6 +9,10 @@
 #include "MultiplayerSessionsSubsystem.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnMultiplayerSessionCreated, const FName, SessionName, const bool, bWasSuccessful);
+DECLARE_MULTICAST_DELEGATE_TwoParams(FOnMultiplayerFindSessionsComplete, const TArray<FOnlineSessionSearchResult>& SearchResults, const bool bWasSuccessful);
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnMultiplayerJoinSessionComplete, const EOnJoinSessionCompleteResult::Type Result);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnMultiplayerSessionDestroyed, const FName, SessionName, const bool, bWassuccessful);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnMultiplayerStartSessionComplete, const FName, SessionName, const bool, bWassuccessful);
 
 UCLASS()
 class MULTIPLAYERSESSIONS_API UMultiplayerSessionsSubsystem : public UGameInstanceSubsystem
@@ -21,6 +25,12 @@ private:
 
 public:
 	FOnMultiplayerSessionCreated OnMultiplayerSessionCreatedDelegate;
+	FOnMultiplayerFindSessionsComplete OnMultiplayerFindSessionsComplete;
+
+	FOnMultiplayerJoinSessionComplete OnMultiplayerJoinSessionComplete;
+	FOnMultiplayerSessionDestroyed OnMultiplayerSessionDestroyed;
+
+	FOnMultiplayerStartSessionComplete OnMultiplayerSessionStarted;
 	
 public:
 	UMultiplayerSessionsSubsystem();

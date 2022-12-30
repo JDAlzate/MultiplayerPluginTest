@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "Interfaces/OnlineSessionInterface.h"
 #include "UObject/Object.h"
 #include "MenuWidget.generated.h"
 
@@ -33,6 +34,15 @@ protected:
 protected:
 	UFUNCTION()
 	virtual void OnMultiplayerSessionCreated(const FName SessionName, const bool bWasSuccessful);
+
+	virtual void OnMultiplayerSessionsFound(const TArray<FOnlineSessionSearchResult>& SearchResults, const bool bWasSuccessful);
+	virtual void OnMultiplayerSessionJoined(const EOnJoinSessionCompleteResult::Type Result);
+
+	UFUNCTION()
+	virtual void OnMultiplayerSessionDestroyed(const FName SessionName, const bool bWasSuccessful);
+
+	UFUNCTION()
+	virtual void OnMultiplayerSessionStarted(const FName SessionName, const bool bWasSuccessful);
 	
 public:
 	UFUNCTION(BlueprintCallable)
