@@ -8,6 +8,8 @@
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "MultiplayerSessionsSubsystem.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnMultiplayerSessionCreated, const FName, SessionName, const bool, bWasSuccessful);
+
 UCLASS()
 class MULTIPLAYERSESSIONS_API UMultiplayerSessionsSubsystem : public UGameInstanceSubsystem
 {
@@ -16,6 +18,9 @@ class MULTIPLAYERSESSIONS_API UMultiplayerSessionsSubsystem : public UGameInstan
 private:
 	IOnlineSessionPtr OnlineSessionInterface;
 	FOnlineSessionSettings SessionSettings;
+
+public:
+	FOnMultiplayerSessionCreated OnMultiplayerSessionCreatedDelegate;
 	
 public:
 	UMultiplayerSessionsSubsystem();

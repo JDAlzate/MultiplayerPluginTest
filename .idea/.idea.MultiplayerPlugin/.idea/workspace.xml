@@ -7,7 +7,6 @@
   <component name="ChangeListManager">
     <list default="true" id="da89c834-4392-40fa-9e41-3e7a1986b7ea" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.MultiplayerPlugin/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.MultiplayerPlugin/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/ThirdPerson/Blueprints/BP_ThirdPersonCharacter.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/ThirdPerson/Blueprints/BP_ThirdPersonCharacter.uasset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Plugins/MultiplayerSessions/Source/MultiplayerSessions/Private/MenuWidget.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Plugins/MultiplayerSessions/Source/MultiplayerSessions/Private/MenuWidget.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Plugins/MultiplayerSessions/Source/MultiplayerSessions/Private/MultiplayerSessionsSubsystem.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Plugins/MultiplayerSessions/Source/MultiplayerSessions/Private/MultiplayerSessionsSubsystem.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Plugins/MultiplayerSessions/Source/MultiplayerSessions/Public/MenuWidget.h" beforeDir="false" afterPath="$PROJECT_DIR$/Plugins/MultiplayerSessions/Source/MultiplayerSessions/Public/MenuWidget.h" afterDir="false" />
@@ -174,7 +173,8 @@
       <workItem from="1672194511619" duration="4547000" />
       <workItem from="1672245287756" duration="1521000" />
       <workItem from="1672281532283" duration="8262000" />
-      <workItem from="1672320518539" duration="9876000" />
+      <workItem from="1672320518539" duration="10835000" />
+      <workItem from="1672357671067" duration="988000" />
     </task>
     <servers />
   </component>

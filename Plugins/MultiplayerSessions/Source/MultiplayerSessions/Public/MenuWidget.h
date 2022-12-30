@@ -29,6 +29,10 @@ private:
 protected:
 	virtual void NativeConstruct() override;
 	virtual void NativeDestruct() override;
+
+protected:
+	UFUNCTION()
+	virtual void OnMultiplayerSessionCreated(const FName SessionName, const bool bWasSuccessful);
 	
 public:
 	UFUNCTION(BlueprintCallable)

@@ -27,6 +27,14 @@ void UMenuWidget::NativeDestruct()
 	Super::NativeDestruct();
 }
 
+void UMenuWidget::OnMultiplayerSessionCreated(const FName SessionName, const bool bWasSuccessful)
+{
+	if (bWasSuccessful)
+	{
+		GetWorld()->ServerTravel(TEXT("/Game/ThirdPerson/Maps/Lobby?listen"));
+	}
+}
+
 void UMenuWidget::SetupMenu()
 {
 	AddToViewport();
@@ -43,6 +51,11 @@ void UMenuWidget::SetupMenu()
 	}
 
 	MultiplayerSessionsSubsystem = UMultiplayerSessionsSubsystem::Get(GetGameInstance());
+	if (MultiplayerSessionsSubsystem)
+	{
+		MultiplayerSessionsSubsystem->OnMultiplayerSessionCreatedDelegate.AddDynamic(this, &UMenuWidget::OnMultiplayerSessionCreated);
+	}
+	
 }
 
 void UMenuWidget::TearDownMenu()

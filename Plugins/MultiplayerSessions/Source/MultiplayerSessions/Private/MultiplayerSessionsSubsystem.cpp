@@ -65,7 +65,11 @@ void UMultiplayerSessionsSubsystem::RequestCreateSession(const int32 NumPublicCo
 
 	if (const ULocalPlayer* LocalPlayer = GetWorld()->GetFirstLocalPlayerFromController())
 	{
-		OnlineSessionInterface->CreateSession(*LocalPlayer->GetPreferredUniqueNetId(), NAME_GameSession, SessionSettings);
+		const bool bIsSuccessfulRequest = OnlineSessionInterface->CreateSession(*LocalPlayer->GetPreferredUniqueNetId(), NAME_GameSession, SessionSettings);
+		if (!bIsSuccessfulRequest)
+		{
+			OnMultiplayerSessionCreatedDelegate.Broadcast(NAME_GameSession, false);
+		}
 	}
 }
 
@@ -74,12 +78,13 @@ void UMultiplayerSessionsSubsystem::OnCreateSessionComplete(const FName SessionN
 	if (bWasSuccessful)
 	{
 		GEngine->AddOnScreenDebugMessage(INDEX_NONE, 15.f, FColor::Cyan, FString::Printf(TEXT("Created session: %s"), *SessionName.ToString()));
-		GetWorld()->ServerTravel(TEXT("/Game/ThirdPerson/Maps/Lobby?listen"));
 	}
 	else
 	{
 		GEngine->AddOnScreenDebugMessage(INDEX_NONE, 15.f, FColor::Red, FString("Failed to create session!"));
 	}
+
+	OnMultiplayerSessionCreatedDelegate.Broadcast(SessionName, bWasSuccessful);
 }
 
 void UMultiplayerSessionsSubsystem::DestroySession()
